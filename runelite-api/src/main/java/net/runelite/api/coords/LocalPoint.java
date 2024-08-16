@@ -25,13 +25,14 @@
  */
 package net.runelite.api.coords;
 
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.Scene;
 import net.runelite.api.WorldView;
+
+import javax.annotation.Nullable;
 
 /**
  * A two-dimensional point in the local coordinate space.
@@ -102,7 +103,7 @@ public class LocalPoint
 	@Nullable
 	public static LocalPoint fromWorld(WorldView wv, int x, int y)
 	{
-		if (!WorldPoint.isInScene(wv, x, y))
+		if (!WorldPoint.isInScene((Scene) wv, x, y))
 		{
 			return null;
 		}
@@ -159,7 +160,7 @@ public class LocalPoint
 	public boolean isInScene()
 	{
 		return x >= 0 && x < Perspective.SCENE_SIZE << Perspective.LOCAL_COORD_BITS
-			&& y >= 0 && y < Perspective.SCENE_SIZE << Perspective.LOCAL_COORD_BITS;
+				&& y >= 0 && y < Perspective.SCENE_SIZE << Perspective.LOCAL_COORD_BITS;
 	}
 
 	/**
@@ -173,8 +174,8 @@ public class LocalPoint
 	public static LocalPoint fromScene(int x, int y)
 	{
 		return new LocalPoint(
-			(x << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
-			(y << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1)
+				(x << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
+				(y << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1)
 		);
 	}
 
@@ -189,9 +190,9 @@ public class LocalPoint
 	public static LocalPoint fromScene(int x, int y, Scene scene)
 	{
 		return new LocalPoint(
-			(x << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
-			(y << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
-			scene.getWorldViewId()
+				(x << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
+				(y << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
+				scene.getWorldViewId()
 		);
 	}
 
@@ -206,9 +207,9 @@ public class LocalPoint
 	public static LocalPoint fromScene(int x, int y, WorldView wv)
 	{
 		return new LocalPoint(
-			(x << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
-			(y << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
-			wv.getId()
+				(x << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
+				(y << Perspective.LOCAL_COORD_BITS) + (1 << Perspective.LOCAL_COORD_BITS - 1),
+				wv.getId()
 		);
 	}
 
